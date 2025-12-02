@@ -1,12 +1,14 @@
 package web_patterns.inclassspring2025.persistence;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 import web_patterns.inclassspring2025.utils.PasswordHasher;
 
 import java.sql.*;
 import java.util.Scanner;
 
 @Slf4j
+@Repository
 public class UserDaoImpl implements UserDao{
     private Connector connector;
 
@@ -20,17 +22,17 @@ public class UserDaoImpl implements UserDao{
     }
 
     public boolean register(String username, String password) throws SQLException {
-        Connection conn = connector.getConnection();
-        if (conn == null) {
-            throw new SQLException("register(): Could not establish connection to database.");
-        }
-
         if(username == null){
             throw new IllegalArgumentException("Cannot register with a null username");
         }
 
         if(password == null || password.isBlank()){
             throw new IllegalArgumentException("Cannot register with a null or blank password");
+        }
+
+        Connection conn = connector.getConnection();
+        if (conn == null) {
+            throw new SQLException("register(): Could not establish connection to database.");
         }
 
         String hashedPassword = PasswordHasher.hashPassword(password);
