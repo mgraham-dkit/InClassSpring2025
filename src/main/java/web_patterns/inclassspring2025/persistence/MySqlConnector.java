@@ -1,4 +1,4 @@
-package daos.daos;
+package web_patterns.inclassspring2025.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +31,6 @@ public class MySqlConnector implements Connector{
 
     public Connection getConnection(){
         conn = null;
-
-
         //String driver = "com.mysql.cj.jdbc.Driver";
         String driver = properties.getProperty("driver", "com.mysql.cj.jdbc.Driver");
         //String url = "jdbc:mysql://127.0.0.1:3306/classicmodels";

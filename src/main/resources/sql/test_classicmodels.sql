@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS classicmodels;
-CREATE DATABASE IF NOT EXISTS classicmodels;
+DROP DATABASE IF EXISTS test_classicmodels;
+CREATE DATABASE IF NOT EXISTS test_classicmodels;
 
-USE classicmodels;
+USE test_classicmodels;
 
 /*Table structure for table employees */
 DROP TABLE IF EXISTS employees;

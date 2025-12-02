@@ -1,11 +1,15 @@
-package daos.daos;
+package web_patterns.inclassspring2025.persistence;
 
 
-
-import daos.entities.Product;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Repository;
+import web_patterns.inclassspring2025.entities.Product;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

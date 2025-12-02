@@ -1,8 +1,9 @@
-package services;
+package web_patterns.inclassspring2025.services;
 
-import daos.daos.ProductDao;
-import daos.entities.Product;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import web_patterns.inclassspring2025.entities.Product;
+import web_patterns.inclassspring2025.persistence.ProductDao;
 
 import java.sql.SQLException;
 import java.util.List;
