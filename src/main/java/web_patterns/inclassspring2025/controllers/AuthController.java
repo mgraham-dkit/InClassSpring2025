@@ -2,10 +2,7 @@ package web_patterns.inclassspring2025.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import web_patterns.inclassspring2025.services.AuthService;
 
@@ -54,4 +51,15 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(path="/logout")
+    public void logout(@RequestHeader String header){
+        String token = header.replace("Bearer ", "");
+        String loggedOutUser = tokenMap.remove(token);
+        if(loggedOutUser == null){
+            log.info("logout attempt for invalid token {}", token);
+        }
+    }
+
+
 }
