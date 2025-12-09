@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import web_patterns.inclassspring2025.services.AuthService;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,13 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RestController
 @RequestMapping("/api/auth/")
 public class AuthController {
-    private ConcurrentHashMap<String, String> tokenMap;
+    private static final ConcurrentHashMap<String, String> TOKEN_MAP = new ConcurrentHashMap<>();
     private AuthService authService;
 
     public AuthController(AuthService authService){
         this.authService = authService;
-
-        this.tokenMap = new ConcurrentHashMap<>();
     }
 
     @PostMapping(path="/login", produces = "application/json")
@@ -35,8 +34,9 @@ public class AuthController {
              }
              // Generate token
             String token = UUID.randomUUID().toString();
+             log.info("Added {} token for user {}", token, username);
             // Store token
-            tokenMap.put(token, username);
+            TOKEN_MAP.put(token, username);
             // return token
             return token;
         }catch(IllegalArgumentException e){
@@ -53,13 +53,33 @@ public class AuthController {
     }
 
     @GetMapping(path="/logout")
-    public void logout(@RequestHeader String header){
+    public void logout(@RequestHeader("Authorization") String header){
         String token = header.replace("Bearer ", "");
-        String loggedOutUser = tokenMap.remove(token);
+        String loggedOutUser = TOKEN_MAP.remove(token);
         if(loggedOutUser == null){
             log.info("logout attempt for invalid token {}", token);
         }
     }
 
+    @GetMapping(path="/getUsernames", produces="application/json")
+    public List<String> getUsernames(@RequestHeader("Authorization") String header){
+        String token = header.replace("Bearer ", "");
 
+        // DO NOT USE CONTAINS TO CHECK FOR A TOKEN!!!
+        // contains() checks for VALUES
+        // containsKey() checks for a key
+
+        // Yes. This did break me a little bit.
+        if(TOKEN_MAP.containsKey(token)) {
+            try {
+                List<String> usernames = authService.getUsernames();
+                return usernames;
+            }catch(SQLException e){
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+    }
 }

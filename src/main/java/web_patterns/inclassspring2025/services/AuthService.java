@@ -2,10 +2,10 @@ package web_patterns.inclassspring2025.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import web_patterns.inclassspring2025.entities.User;
 import web_patterns.inclassspring2025.persistence.UserDao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -35,6 +35,10 @@ public class AuthService {
             log.error("Database error occurred when {} attempted login}", username);
             throw e;
         }
+    }
+
+    public List<String> getUsernames() throws SQLException{
+        return userDao.getUsernames();
     }
 
     private static void validateNullEmpty(String text, String message) {

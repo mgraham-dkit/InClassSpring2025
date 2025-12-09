@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 import web_patterns.inclassspring2025.utils.PasswordHasher;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
@@ -102,6 +104,32 @@ public class UserDaoImpl implements UserDao{
             }
         }catch(SQLIntegrityConstraintViolationException e){
             System.out.println("Username unavailable.");
+        }
+    }
+
+    public List<String> getUsernames() throws SQLException{
+        Connection conn = connector.getConnection();
+        if(conn == null){
+            throw new SQLException("Could not establish connection to database. Please try again later.");
+        }
+
+        List<String> usernames = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM users")) {
+            try(ResultSet rs = ps.executeQuery()) {
+                while(rs.next()){
+                    String username = rs.getString("username");
+                    usernames.add(username);
+                }
+                return usernames;
+            }catch(SQLException e){
+                log.error("getUsernames(): An issue occurred when running the query or processing " +
+                        "the resultset. \nException: {}", e.getMessage());
+                throw e;
+            }
+        }catch(SQLException e){
+            log.error("getUsernames() - The SQL query could not be prepared. \nException: {}",
+                    e.getMessage());
+            throw e;
         }
     }
 }
