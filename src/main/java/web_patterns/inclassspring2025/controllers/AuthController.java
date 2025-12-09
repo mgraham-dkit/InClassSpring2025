@@ -10,15 +10,20 @@ import org.springframework.web.server.ResponseStatusException;
 import web_patterns.inclassspring2025.services.AuthService;
 
 import java.sql.SQLException;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/auth/")
 public class AuthController {
+    private ConcurrentHashMap<String, String> tokenMap;
     private AuthService authService;
 
     public AuthController(AuthService authService){
         this.authService = authService;
+
+        this.tokenMap = new ConcurrentHashMap<>();
     }
 
     @PostMapping(path="/login", produces = "application/json")
@@ -31,7 +36,12 @@ public class AuthController {
              if(!authenticated){
                  throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
              }
-             return "FAKE_TOKEN_NOT_GOOD_DO_NOT_USE_THIS_ONE";
+             // Generate token
+            String token = UUID.randomUUID().toString();
+            // Store token
+            tokenMap.put(token, username);
+            // return token
+            return token;
         }catch(IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }catch(SQLException e){
